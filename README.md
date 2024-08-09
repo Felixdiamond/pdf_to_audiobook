@@ -14,6 +14,9 @@ This Python application converts PDF files to audiobooks using Text-to-Speech (T
 ## Requirements
 
 - Python 3.6+
+- ffmpeg
+- eSpeak
+- Tkinter
 - PyPDF2
 - gTTS (Google Text-to-Speech)
 - pydub
@@ -24,7 +27,23 @@ This Python application converts PDF files to audiobooks using Text-to-Speech (T
 
 1. Clone this repository or download the scripts.
 
-2. Run the setup script to install all required dependencies:
+2. Install system dependencies:
+   - On Ubuntu/Debian:
+     ```
+     sudo apt-get update
+     sudo apt-get install -y ffmpeg espeak python3-tk
+     ```
+   - On macOS (using Homebrew):
+     ```
+     brew install ffmpeg espeak
+     ```
+     For Tkinter on macOS, download Python from https://www.python.org/downloads/mac-osx/ and ensure Tkinter is selected during installation.
+   - On Windows:
+     - Install ffmpeg: https://ffmpeg.org/download.html
+     - Install eSpeak: http://espeak.sourceforge.net/download.html
+     - Tkinter should be included with your Python installation. If it's missing, reinstall Python and select the option to install Tkinter.
+
+3. Run the setup script to install all required Python dependencies:
 
    ```
    python setup.py install
@@ -65,6 +84,18 @@ python pdf_to_audiobook.py my_book.pdf my_audiobook.mp3 --lang es --chunk_size 1
 ```
 
 This command will convert `my_book.pdf` to `my_audiobook.mp3` using Spanish ('es') as the language for text-to-speech and a chunk size of 1000.
+
+## Troubleshooting
+
+If you encounter any issues during installation or running the application:
+
+1. Ensure all system dependencies (ffmpeg, espeak, and Tkinter) are correctly installed for your operating system.
+2. Check that your Python version is 3.6 or higher.
+3. If you're having issues with a specific Python package, try installing it manually using pip:
+   ```
+   pip install package_name
+   ```
+4. For GUI issues, ensure Tkinter is properly installed and working on your system.
 
 ## Supported Languages
 
