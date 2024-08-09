@@ -1,26 +1,25 @@
 # PDF to Audiobook Converter
 
-This Python application converts PDF files to audiobooks using Text-to-Speech (TTS) technology. It's designed to be robust, user-friendly, and multilingual, with both a command-line interface and a graphical user interface.
+This Python application converts PDF files to audiobooks using Text-to-Speech (TTS) technology. It features a modern, user-friendly graphical interface and supports multiple languages.
 
 ## Features
 
 - Convert PDF files to MP3 audiobooks
 - Support for multiple languages
 - Efficient processing of large PDF files
-- User-friendly command-line interface
-- Sleek and modern graphical user interface
-- Error handling for smooth operation
+- Modern and intuitive graphical user interface
+- Command-line interface option
+- Dark mode for comfortable use
 
 ## Requirements
 
 - Python 3.6+
 - ffmpeg
 - eSpeak
-- Tkinter
 - PyPDF2
 - gTTS (Google Text-to-Speech)
 - pydub
-- PySimpleGUI (for GUI)
+- CustomTkinter
 - Coqui TTS (for advanced TTS options)
 
 ## Installation
@@ -31,17 +30,15 @@ This Python application converts PDF files to audiobooks using Text-to-Speech (T
    - On Ubuntu/Debian:
      ```
      sudo apt-get update
-     sudo apt-get install -y ffmpeg espeak python3-tk
+     sudo apt-get install -y ffmpeg espeak
      ```
    - On macOS (using Homebrew):
      ```
      brew install ffmpeg espeak
      ```
-     For Tkinter on macOS, download Python from https://www.python.org/downloads/mac-osx/ and ensure Tkinter is selected during installation.
    - On Windows:
      - Install ffmpeg: https://ffmpeg.org/download.html
      - Install eSpeak: http://espeak.sourceforge.net/download.html
-     - Tkinter should be included with your Python installation. If it's missing, reinstall Python and select the option to install Tkinter.
 
 3. Run the setup script to install all required Python dependencies:
 
@@ -61,7 +58,12 @@ To use the GUI version of the application, run:
 python gui.py
 ```
 
-This will open a user-friendly interface where you can select your PDF file, choose output options, and convert to an audiobook with a click of a button.
+This will open a sleek, modern interface where you can:
+- Select your PDF file
+- Choose the output MP3 file location
+- Select the language for text-to-speech
+- Adjust the chunk size for processing
+- Start the conversion process with a single click
 
 ### Command-line Interface
 
@@ -83,19 +85,20 @@ Example:
 python pdf_to_audiobook.py my_book.pdf my_audiobook.mp3 --lang es --chunk_size 1000
 ```
 
-This command will convert `my_book.pdf` to `my_audiobook.mp3` using Spanish ('es') as the language for text-to-speech and a chunk size of 1000.
-
 ## Troubleshooting
 
 If you encounter any issues during installation or running the application:
 
-1. Ensure all system dependencies (ffmpeg, espeak, and Tkinter) are correctly installed for your operating system.
+1. Ensure all system dependencies (ffmpeg and espeak) are correctly installed for your operating system.
 2. Check that your Python version is 3.6 or higher.
 3. If you're having issues with a specific Python package, try installing it manually using pip:
    ```
    pip install package_name
    ```
-4. For GUI issues, ensure Tkinter is properly installed and working on your system.
+4. For GUI issues, ensure CustomTkinter is properly installed:
+   ```
+   pip install customtkinter
+   ```
 
 ## Supported Languages
 
@@ -109,9 +112,8 @@ The application supports a wide range of languages, including but not limited to
 - Portuguese ('pt')
 - Chinese ('zh-cn')
 - Japanese ('ja')
-- Korean ('ko')
 
-The exact list of supported languages may vary depending on the TTS engine used (gTTS, Coqui TTS, or FastSpeech2).
+The exact list of supported languages may vary depending on the TTS engine used (gTTS or Coqui TTS).
 
 ## Contributing
 

@@ -1,68 +1,108 @@
-import PySimpleGUI as sg
+import customtkinter as ctk
 import os
 from pdf_to_audiobook import pdf_to_audiobook
+import threading
 
-# Set the theme for a dark color scheme
-sg.theme('DarkGrey13')
+ctk.set_appearance_mode("dark")
+ctk.set_default_color_theme("blue")
 
-def create_window():
-    layout = [
-        [sg.Text('PDF to Audiobook Converter', font=('Helvetica', 20), justification='center', expand_x=True)],
-        [sg.Text('Select PDF File:', font=('Helvetica', 12)), 
-         sg.Input(key='-PDF-', enable_events=True), 
-         sg.FileBrowse(file_types=(("PDF Files", "*.pdf"),))],
-        [sg.Text('Output File:', font=('Helvetica', 12)), 
-         sg.Input(key='-OUTPUT-', enable_events=True), 
-         sg.SaveAs(file_types=(("MP3 Files", "*.mp3"),))],
-        [sg.Text('Language:', font=('Helvetica', 12)), 
-         sg.Combo(['English', 'Spanish', 'French', 'German', 'Italian', 'Portuguese', 'Chinese', 'Japanese'], 
-                  default_value='English', key='-LANG-', font=('Helvetica', 10))],
-        [sg.Text('Chunk Size:', font=('Helvetica', 12)), 
-         sg.Slider(range=(100, 1000), default_value=500, orientation='h', size=(20, 15), key='-CHUNK-')],
-        [sg.Text('Max Decoder Steps:', font=('Helvetica', 12)), 
-         sg.Slider(range=(10000, 2000000), default_value=1000000, orientation='h', size=(20, 15), key='-DECODER-')],
-        [sg.Button('Convert', font=('Helvetica', 12), button_color=('white', '#007acc')), 
-         sg.Button('Exit', font=('Helvetica', 12), button_color=('white', '#cc0000'))],
-        [sg.ProgressBar(100, orientation='h', size=(20, 20), key='-PROGRESS-', visible=False)],
-        [sg.Multiline(size=(60, 10), key='-OUTPUT-', autoscroll=True, reroute_stdout=True, 
-                      reroute_stderr=True, visible=False)]
-    ]
+class PDFToAudiobookApp(ctk.CTk):
+    def __init__(self):
+        super().__init__()
 
-    return sg.Window('PDF to Audiobook', layout, finalize=True, resizable=True)
+        self.title("PDF to Audiobook Converter")
+        self.geometry("600x500")
 
-def run_gui():
-    window = create_window()
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(0, weight=1)
 
-    while True:
-        event, values = window.read()
+        self.main_frame = ctk.CTkFrame(self)
+        self.main_frame.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
+        self.main_frame.grid_columnconfigure(0, weight=1)
 
-        if event == sg.WINDOW_CLOSED or event == 'Exit':
-            break
+        self.title_label = ctk.CTkLabel(self.main_frame, text="PDF to Audiobook Converter", font=ctk.CTkFont(size=24, weight="bold"))
+        self.title_label.grid(row=0, column=0, padx=20, pady=(20, 10), sticky="ew")
 
-        if event == 'Convert':
-            pdf_path = values['-PDF-']
-            output_path = values['-OUTPUT-']
-            lang = values['-LANG-'].lower()[:2]  # Convert to two-letter code
-            chunk_size = int(values['-CHUNK-'])
-            max_decoder_steps = int(values['-DECODER-'])
+        self.pdf_entry = ctk.CTkEntry(self.main_frame, placeholder_text="Select PDF File")
+        self.pdf_entry.grid(row=1, column=0, padx=20, pady=(10, 5), sticky="ew")
 
-            if not pdf_path or not output_path:
-                sg.popup_error('Please select both input PDF and output MP3 file.')
-                continue
+        self.pdf_button = ctk.CTkButton(self.main_frame, text="Browse PDF", command=self.browse_pdf)
+        self.pdf_button.grid(row=2, column=0, padx=20, pady=(5, 10), sticky="ew")
 
-            window['-PROGRESS-'].update(visible=True)
-            window['-OUTPUT-'].update(visible=True)
-            window.refresh()
+        self.output_entry = ctk.CTkEntry(self.main_frame, placeholder_text="Select Output File")
+        self.output_entry.grid(row=3, column=0, padx=20, pady=(10, 5), sticky="ew")
 
-            try:
-                pdf_to_audiobook(pdf_path, output_path, lang, chunk_size, max_decoder_steps)
-                sg.popup('Conversion Complete!', 'Your audiobook has been created successfully.')
-            except Exception as e:
-                sg.popup_error(f'An error occurred: {str(e)}')
+        self.output_button = ctk.CTkButton(self.main_frame, text="Save As", command=self.save_output)
+        self.output_button.grid(row=4, column=0, padx=20, pady=(5, 10), sticky="ew")
 
-            window['-PROGRESS-'].update(visible=False)
+        self.lang_label = ctk.CTkLabel(self.main_frame, text="Language:")
+        self.lang_label.grid(row=5, column=0, padx=20, pady=(10, 5), sticky="w")
 
-    window.close()
+        self.lang_combobox = ctk.CTkComboBox(self.main_frame, values=["English", "Spanish", "French", "German", "Italian", "Portuguese", "Chinese", "Japanese"])
+        self.lang_combobox.grid(row=6, column=0, padx=20, pady=(5, 10), sticky="ew")
 
-if __name__ == '__main__':
-    run_gui()
+        self.chunk_label = ctk.CTkLabel(self.main_frame, text="Chunk Size:")
+        self.chunk_label.grid(row=7, column=0, padx=20, pady=(10, 5), sticky="w")
+
+        self.chunk_slider = ctk.CTkSlider(self.main_frame, from_=100, to=1000, number_of_steps=18)
+        self.chunk_slider.grid(row=8, column=0, padx=20, pady=(5, 10), sticky="ew")
+        self.chunk_slider.set(500)
+
+        self.convert_button = ctk.CTkButton(self.main_frame, text="Convert", command=self.start_conversion)
+        self.convert_button.grid(row=9, column=0, padx=20, pady=(20, 10), sticky="ew")
+
+        self.progress_bar = ctk.CTkProgressBar(self.main_frame)
+        self.progress_bar.grid(row=10, column=0, padx=20, pady=(10, 20), sticky="ew")
+        self.progress_bar.set(0)
+
+        self.status_label = ctk.CTkLabel(self.main_frame, text="")
+        self.status_label.grid(row=11, column=0, padx=20, pady=(10, 20), sticky="ew")
+
+    def browse_pdf(self):
+        filename = ctk.filedialog.askopenfilename(filetypes=[("PDF Files", "*.pdf")])
+        if filename:
+            self.pdf_entry.delete(0, ctk.END)
+            self.pdf_entry.insert(0, filename)
+
+    def save_output(self):
+        filename = ctk.filedialog.asksaveasfilename(defaultextension=".mp3", filetypes=[("MP3 Files", "*.mp3")])
+        if filename:
+            self.output_entry.delete(0, ctk.END)
+            self.output_entry.insert(0, filename)
+
+    def start_conversion(self):
+        pdf_path = self.pdf_entry.get()
+        output_path = self.output_entry.get()
+        lang = self.lang_combobox.get().lower()[:2]
+        chunk_size = int(self.chunk_slider.get())
+
+        if not pdf_path or not output_path:
+            self.status_label.configure(text="Please select both input PDF and output MP3 file.")
+            return
+
+        self.convert_button.configure(state="disabled")
+        self.progress_bar.set(0)
+        self.status_label.configure(text="Converting...")
+
+        thread = threading.Thread(target=self.run_conversion, args=(pdf_path, output_path, lang, chunk_size))
+        thread.start()
+
+    def run_conversion(self, pdf_path, output_path, lang, chunk_size):
+        try:
+            pdf_to_audiobook(pdf_path, output_path, lang, chunk_size)
+            self.after(0, self.conversion_complete)
+        except Exception as e:
+            self.after(0, self.conversion_error, str(e))
+
+    def conversion_complete(self):
+        self.progress_bar.set(1)
+        self.status_label.configure(text="Conversion Complete!")
+        self.convert_button.configure(state="normal")
+
+    def conversion_error(self, error_message):
+        self.status_label.configure(text=f"Error: {error_message}")
+        self.convert_button.configure(state="normal")
+
+if __name__ == "__main__":
+    app = PDFToAudiobookApp()
+    app.mainloop()
