@@ -160,7 +160,15 @@ def pdf_to_audiobook(pdf_path, output_path, lang='en', chunk_size=1000, max_deco
     else:
         print("Failed to generate audiobook: No audio was produced.")
 
-def main():
+def main(pdf_path, output_path, lang='en', chunk_size=1000, max_decoder_steps=100000):
+    try:
+        pdf_to_audiobook(pdf_path, output_path, lang, chunk_size, max_decoder_steps)
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+
+if __name__ == "__main__":
+    import argparse
+    
     parser = argparse.ArgumentParser(description="Convert PDF to Audiobook")
     parser.add_argument("pdf_path", help="Path to the input PDF file")
     parser.add_argument("output_path", help="Path to save the output audio file")
@@ -170,10 +178,4 @@ def main():
 
     args = parser.parse_args()
 
-    try:
-        pdf_to_audiobook(args.pdf_path, args.output_path, args.lang, args.chunk_size, args.max_decoder_steps)
-    except Exception as e:
-        print(f"An error occurred: {str(e)}")
-
-if __name__ == "__main__":
-    main()
+    main(args.pdf_path, args.output_path, args.lang, args.chunk_size, args.max_decoder_steps)
