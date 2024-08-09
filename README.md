@@ -7,7 +7,7 @@ This Python application converts PDF files to audiobooks using Text-to-Speech (T
 - Convert PDF files to MP3 audiobooks
 - Support for multiple languages
 - Efficient processing of large PDF files
-- Modern and intuitive graphical user interface
+- Intuitive graphical user interface
 - Command-line interface option
 - Dark mode for comfortable use
 
