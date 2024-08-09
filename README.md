@@ -61,7 +61,6 @@ The script supports all languages available in the gTTS library. Some common lan
 - 'ja' (Japanese)
 - 'ko' (Korean)
 - 'zh-CN' (Chinese, Simplified) the PDF
-- Create a graphical user interface (GUI) for easier use
 
 ## Contributing
 
