@@ -24,10 +24,10 @@ This Python script converts PDF files to audiobooks using Text-to-Speech (TTS) t
 2. Install the required Python packages:
 
    ```
-   pip install PyPDF2 gtts pydub
+   pip install -r requirements.txt
    ```
 
-3. Ensure you have ffmpeg installed on your system, as it's required by pydub for audio processing.
+3. Ensure you have ffmpeg and eSpeak installed on your system.
 
 ## Usage
 
